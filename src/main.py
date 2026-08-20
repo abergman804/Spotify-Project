@@ -1,5 +1,7 @@
-from database import load_database, save_database
+from database import choose_next_song, load_database, save_database
 import random
+from spotify_api import add_to_queue, search_song
+
 def main():
     # Main menu
     songs = load_database()
@@ -27,6 +29,8 @@ def main():
                 for index, song in enumerate(songs, start=1):
                     print(f"{index}. {song['title']} by {song['artist']}")
 
+
+
         # Will let users add a song to the database
         elif choice == "2":
             title = input("Song title: ")
@@ -41,18 +45,26 @@ def main():
 
             print(f"Song: {title} by {artist} added to the database.")
 
+
+        # Will let users choose a random song from the database and add it to the Spotify queue
         elif choice == "3":
-            if len(songs) == 0:
-                print("No songs in the database.")
-            else:
-                next_song = random.choice(songs)
+                next_song = choose_next_song(songs, last_song)
 
-                while next_song == last_song:
-                    next_song = random.choice(songs)
+                if next_song is not None:
+                    title = next_song["title"]
+                    artist = next_song["artist"]
 
-                print(f"Next song: {next_song['title']} by {next_song['artist']}")
+                    # Search for the song on Spotify
+                    found_title, found_artist, uri = search_song(title, artist)
 
-                last_song = next_song
+                    if uri is not None:
+                        add_to_queue(uri)
+                        print(f"Added to queue: {found_title} by {found_artist}")
+                        last_song = next_song
+                    else:
+                        print(f"Song: {title} by {artist} not found on Spotify.")
+                else:
+                    print("No songs in the database.")
 
         #deletes songs from the database
         elif choice == "4":
