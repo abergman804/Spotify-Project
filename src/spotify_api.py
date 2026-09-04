@@ -2,7 +2,7 @@ import spotipy
 
 from spotipy.oauth2 import SpotifyPKCE
 
-CLIENT_ID = "9632c0fa6e66434cbd7d11d777fc893a"
+CLIENT_ID = # Your spotify client ID here
 
 REDIRECT_URI = "http://127.0.0.1:8888/callback"
 
